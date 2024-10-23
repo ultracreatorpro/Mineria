@@ -21,7 +21,7 @@
         .balance {
             text-align: center;
             color: white;
-            font-size: 24px;
+            font-size: 20px;
             margin: 20px 0;
         }
         .center-image {
@@ -90,7 +90,7 @@
 <body>
 
 <div class="header">Minería en la Nube</div>
-<div class="balance">💰 Balance: <span id="balance">0</span> Tokens</div>
+<div class="balance">💰 Balance: <span id="balance">0</span> MELN</div>
 <img src="https://i.ibb.co/5W6Js1P/Dise-o-sin-t-tulo-pobre-blanco.png" id="mining-image" class="center-image" alt="Imagen de Minería">
 <button class="button" id="startMining">Iniciar minería</button>
 
@@ -141,7 +141,7 @@
         localStorage.setItem('miningStartTime', miningStartTime);
 
         document.getElementById("mining-image").src = "https://i.ibb.co/xzH1VbV/Dise-o-sin-t-tulo-yes.png"; // Cambiar a la imagen secundaria
-        document.body.style.backgroundImage = "url('https://i.pinimg.com/236x/0b/65/a4/0b65a4bd328f764de57dead1a8184301.jpg')"; // Cambiar el fondo
+        document.body.style.backgroundImage = "url('https://i.ibb.co/hf6hbrV/Dise-o-sin-t-tulo-3.png')"; // Cambiar el fondo
         startMiningProcess(miningDuration);
     });
 
@@ -156,7 +156,7 @@
                 balance += 100;
                 localStorage.setItem('balance', balance);
                 document.getElementById("balance").innerText = balance;
-                showPopup("¡Minería completada! Has ganado 100 Tokens.");
+                showPopup("¡Minería completada! Has ganado 100 MELN.");
                 resetMining();
             } else {
                 updateCountdown(timeLeft);
@@ -173,8 +173,8 @@
 
     function resetMining() {
         miningActive = false;
-        document.getElementById("mining-image").src = "https://i.ibb.co/ZXX820x/20241023-011508-0000.png"; // Volver a la imagen principal
-        document.body.style.backgroundImage = "url('tu-imagen-de-fondo.jpg')"; // Volver al fondo original
+        document.getElementById("mining-image").src = "https://i.ibb.co/5W6Js1P/Dise-o-sin-t-tulo-pobre-blanco.png"; // Volver a la imagen principal
+        document.body.style.backgroundImage = "url('https://i.ibb.co/hf6hbrV/Dise-o-sin-t-tulo-3.png')"; // Volver al fondo original
         localStorage.removeItem('miningStartTime');
     }
 
