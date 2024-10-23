@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tareas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            color: white;
+        }
+        .titulo {
+            font-size: 24px; /* Tamaño más pequeño para el título */
+            color: white;
+            text-align: center;
+            background-color: blue;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        .header {
+            text-align: center;
+            padding: 20px;
+        }
+        .subheader {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .task-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #1a1a1a;
+            margin: 10px auto;
+            padding: 10px;
+            border-radius: 10px;
+            width: 80%;
+        }
+        .task-icon {
+            width: 40px;
+            height: 40px;
+        }
+        .task-text {
+            flex: 1;
+            margin-left: 10px;
+            font-size: 16px; /* Tamaño más pequeño para el texto de los contenedores */
+        }
+        .task-button {
+            padding: 10px 20px;
+            background-color: green;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .task-button[disabled] {
+            background-color: grey;
+            cursor: not-allowed;
+        }
+        .popup {
+            display: none;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: white;
+            color: black;
+            border-radius: 10px;
+            z-index: 1000;
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+        .menu {
+            display: flex;
+            justify-content: space-around;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #545050;
+            padding: 10px 0;
+        }
+        .menu-item {
+            text-align: center;
+            width: 33%;
+            background-color: blue;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="titulo">🎉 Gana tokens haciendo tareas</div>
+
+<div class="subheader">
+    🌟 Completa las tareas siguientes para ganar monedas adicionales. ¡Solo puedes completarlas una vez!
+</div>
+
+<!-- Tareas -->
+<div class="task-container" id="task1">
+    <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" class="task-icon" alt="Telegram">
+    <div class="task-text">Síguenos en Telegram y ganarás 300 MELN</div>
+    <button class="task-button" id="taskButton1">Seguir</button>
+</div>
+
+<div class="task-container" id="task2">
+    <img src="https://cdn-icons-png.flaticon.com/512/3955/3955024.png" class="task-icon" alt="Instagram">
+    <div class="task-text">Síguenos en Instagram y ganarás 300 MELN</div>
+    <button class="task-button" id="taskButton2">Seguir</button>
+</div>
+
+<div class="task-container" id="task3">
+    <img src="https://cdn-icons-png.flaticon.com/512/3670/3670147.png" class="task-icon" alt="Youtube">
+    <div class="task-text">Síguenos en Youtube y ganarás 300 MELN</div>
+    <button class="task-button" id="taskButton3">Seguir</button>
+</div>
+
+<div class="task-container" id="task4">
+    <img src="https://cdn-icons-png.flaticon.com/512/3670/3670211.png" class="task-icon" alt="Twitter">
+    <div class="task-text">Síguenos en Twitter y ganarás 300 MELN</div>
+    <button class="task-button" id="taskButton4">Seguir</button>
+</div>
+
+<!-- Pop-up y Overlay -->
+<div class="overlay" id="overlay"></div>
+<div class="popup" id="popup">
+    <p id="popupMessage"></p>
+</div>
+
+<!-- Menú inferior -->
+<div class="menu">
+    <div class="menu-item" onclick="location.href='mineria.html'">Minería</div>
+    <div class="menu-item">Tareas</div>
+    <div class="menu-item" onclick="location.href='referidos.html'">Referidos</div>
+</div>
+
+<script>
+    let balance = localStorage.getItem('balance') ? parseInt(localStorage.getItem('balance')) : 0;
+
+    function completeTask(taskId, link) {
+        const taskKey = `task${taskId}Completed`;
+
+        if (localStorage.getItem(taskKey)) {
+            showPopup("✅ Tarea ya realizada con éxito.");
+            return;
+        }
+
+        // Actualiza el balance
+        balance += 300;
+        localStorage.setItem('balance', balance);
+
+        // Marca la tarea como completada
+        localStorage.setItem(taskKey, true);
+        document.getElementById(`taskButton${taskId}`).disabled = true;
+
+        // Redirige al usuario
+        window.open(link, '_blank');
+
+        // Muestra el popup
+        showPopup("✅ Tarea realizada con éxito. ¡Has ganado 300 monedas!");
+    }
+
+    function showPopup(message) {
+        document.getElementById("popupMessage").innerText = message;
+        document.getElementById("overlay").style.display = "block";
+        document.getElementById("popup").style.display = "block";
+
+        setTimeout(() => {
+            document.getElementById("overlay").style.display = "none";
+            document.getElementById("popup").style.display = "none";
+        }, 3000);
+    }
+
+    // Eventos para los botones
+    document.getElementById("taskButton1").addEventListener("click", function() {
+        completeTask(1, 'https://t.me/AndroidCrypto');
+    });
+
+    document.getElementById("taskButton2").addEventListener("click", function() {
+        completeTask(2, 'https://www.instagram.com/aprendesobrecriptomonedas');
+    });
+
+    document.getElementById("taskButton3").addEventListener("click", function() {
+        completeTask(3, 'https://www.youtube.com/@CursoDeCriptomonedas');
+    });
+
+    document.getElementById("taskButton4").addEventListener("click", function() {
+        completeTask(4, 'https://x.com/Cursodecrypto');
+    });
+</script>
+
+</body>
+</html>
