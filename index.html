@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minería en la Nube</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://i.ibb.co/hf6hbrV/Dise-o-sin-t-tulo-3.png'); /* Cambia la imagen de fondo */
+            background-size: cover;
+        }
+        .header {
+            background-color: blue;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .balance {
+            text-align: center;
+            color: white;
+            font-size: 24px;
+            margin: 20px 0;
+        }
+        .center-image {
+            display: block;
+            margin: 0 auto;
+            width: 250px; /* Cambia el tamaño según sea necesario */
+        }
+        .button {
+            display: block;
+            width: 80%;
+            margin: 20px auto;
+            padding: 15px;
+            background-color: green;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .popup {
+            display: none;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            border-radius: 10px;
+            background-color: white;
+            border: 3px solid red;
+            z-index: 1000;
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+        .menu {
+            display: flex;
+            justify-content: space-around;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #ffa805;
+            padding: 10px 0;
+        }
+        .menu-item {
+            text-align: center;
+            width: 33%;
+            background-color: blue; /* Color de fondo azul */
+            color: white; /* Color del texto */
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .menu-item:hover {
+            background-color: darkblue; /* Color al pasar el ratón */
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">Minería en la Nube</div>
+<div class="balance">💰 Balance: <span id="balance">0</span> Tokens</div>
+<img src="https://i.ibb.co/5W6Js1P/Dise-o-sin-t-tulo-pobre-blanco.png" id="mining-image" class="center-image" alt="Imagen de Minería">
+<button class="button" id="startMining">iniciar Minería</button>
+
+<div class="overlay" id="overlay"></div>
+<div class="popup" id="popup">
+    <p id="popupMessage"></p>
+    <button onclick="closePopup()">Cerrar</button>
+</div>
+
+<div class="menu">
+    <div class="menu-item">Minería</div>
+    <div class="menu-item" onclick="location.href='tareas.html'">Tareas</div>
+    <div class="menu-item" onclick="location.href='referidos.html'">Referidos</div>
+    
+</div>
+
+<script>
+    let balance = localStorage.getItem('balance') ? parseInt(localStorage.getItem('balance')) : 0;
+    let miningActive = false;
+    let miningStartTime;
+    const miningDuration = 3 * 60 * 60 * 1000; // 3 horas en milisegundos
+    let timerInterval;
+
+    document.getElementById("balance").innerText = balance;
+
+    // Comprobar si ya se estaba minando
+    const miningStart = localStorage.getItem('miningStartTime');
+    if (miningStart) {
+        const elapsed = Date.now() - parseInt(miningStart);
+        const timeLeft = Math.max(miningDuration - elapsed, 0);
+        if (timeLeft > 0) {
+            miningActive = true;
+            document.getElementById("mining-image").src = "https://i.ibb.co/xzH1VbV/Dise-o-sin-t-tulo-yes.png"; // Imagen de minería activa
+            startMiningProcess(timeLeft);
+        } else {
+            resetMining();
+        }
+    }
+
+    document.getElementById("startMining").addEventListener("click", function() {
+        if (miningActive) {
+            showPopup("✅ Ya estás minando. Espera a que termine el tiempo de minado, recolecta y vuelve a comenzar el proceso.");
+            return;
+        }
+
+        miningActive = true;
+        miningStartTime = Date.now();
+        localStorage.setItem('miningStartTime', miningStartTime);
+
+        document.getElementById("mining-image").src = "https://i.ibb.co/xzH1VbV/Dise-o-sin-t-tulo-yes.png"; // Cambiar a la imagen secundaria
+        document.body.style.backgroundImage = "url('https://i.pinimg.com/236x/0b/65/a4/0b65a4bd328f764de57dead1a8184301.jpg')"; // Cambiar el fondo
+        startMiningProcess(miningDuration);
+    });
+
+    function startMiningProcess(timeLeft) {
+        clearInterval(timerInterval);
+        updateCountdown(timeLeft);
+
+        timerInterval = setInterval(() => {
+            timeLeft -= 1000;
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                balance += 100;
+                localStorage.setItem('balance', balance);
+                document.getElementById("balance").innerText = balance;
+                showPopup("¡Minería completada! Has ganado 100 Tokens.");
+                resetMining();
+            } else {
+                updateCountdown(timeLeft);
+            }
+        }, 1000);
+    }
+
+    function updateCountdown(timeLeft) {
+        const hours = String(Math.floor(timeLeft / (1000 * 60 * 60))).padStart(2, '0');
+        const minutes = String(Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+        const seconds = String(Math.floor((timeLeft % (1000 * 60)) / 1000)).padStart(2, '0');
+        document.getElementById("startMining").innerText = `Proceso de Minería - ${hours}:${minutes}:${seconds}`;
+    }
+
+    function resetMining() {
+        miningActive = false;
+        document.getElementById("mining-image").src = "https://i.ibb.co/ZXX820x/20241023-011508-0000.png"; // Volver a la imagen principal
+        document.body.style.backgroundImage = "url('tu-imagen-de-fondo.jpg')"; // Volver al fondo original
+        localStorage.removeItem('miningStartTime');
+    }
+
+    function showPopup(message) {
+        document.getElementById("popupMessage").innerText = message;
+        document.getElementById("overlay").style.display = "block";
+        document.getElementById("popup").style.display = "block";
+    }
+
+    function closePopup() {
+        document.getElementById("overlay").style.display = "none";
+        document.getElementById("popup").style.display = "none";
+    }
+</script>
+
+</body>
+</html>
