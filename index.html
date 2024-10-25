@@ -104,7 +104,6 @@
     <div class="menu-item">Minería</div>
     <div class="menu-item" onclick="location.href='tareas.html'">Tareas</div>
     <div class="menu-item" onclick="location.href='referidos.html'">Referidos</div>
-    
 </div>
 
 <script>
@@ -126,7 +125,7 @@
             document.getElementById("mining-image").src = "https://i.ibb.co/xzH1VbV/Dise-o-sin-t-tulo-yes.png"; // Imagen de minería activa
             startMiningProcess(timeLeft);
         } else {
-            resetMining();
+            addPendingTokens(elapsed);  // Agregar los tokens si ya ha pasado el tiempo
         }
     }
 
@@ -176,6 +175,17 @@
         document.getElementById("mining-image").src = "https://i.ibb.co/5W6Js1P/Dise-o-sin-t-tulo-pobre-blanco.png"; // Volver a la imagen principal
         document.body.style.backgroundImage = "url('https://i.ibb.co/hf6hbrV/Dise-o-sin-t-tulo-3.png')"; // Volver al fondo original
         localStorage.removeItem('miningStartTime');
+    }
+
+    // Función para agregar los tokens si ya pasó el tiempo
+    function addPendingTokens(elapsed) {
+        if (elapsed >= miningDuration) {
+            balance += 100;
+            localStorage.setItem('balance', balance);
+            document.getElementById("balance").innerText = balance;
+            resetMining();
+            showPopup("¡Minería completada! Has ganado 100 MELN mientras dormias.");
+        }
     }
 
     function showPopup(message) {
